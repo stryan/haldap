@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"regexp"
@@ -32,6 +33,19 @@ func main() {
 	err := envconfig.Process("haldap", &c)
 	if err != nil {
 		logger.Fatal(err)
+	}
+	if c.URL == "" {
+		// try getting flags
+		urlPtr := flag.String("url", "", "LDAP server URL with scheme")
+		basePtr := flag.String("basedn", "", "LDAP server base DN")
+		attrPtr := flag.String("userattr", "", "LDAP user attribute")
+		flag.Parse()
+		if urlPtr == nil || basePtr == nil || attrPtr == nil {
+			logger.Fatal("all config options failed")
+		}
+		c.URL = *urlPtr
+		c.BaseDN = *basePtr
+		c.UserAttr = *attrPtr
 	}
 	uname, ok := os.LookupEnv("username")
 	if !ok {
