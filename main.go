@@ -18,9 +18,11 @@ type User struct {
 }
 
 type Config struct {
-	URL      string `envconfig:"HALDAP_URL"`
-	BaseDN   string `envconfig:"HALDAP_BASEDN"`
-	UserAttr string `envconfig:"HALDAP_USERATTR"`
+	URL        string `envconfig:"HALDAP_URL"`
+	BaseDN     string `envconfig:"HALDAP_BASEDN"`
+	UserAttr   string `envconfig:"HALDAP_USERATTR"`
+	AdminGroup string `envconfig:"HALDAP_ADMIN"`
+	UserGroup  string `envconfig:"HALDAP_USER"`
 }
 
 func (u *User) String() string {
@@ -39,13 +41,19 @@ func main() {
 		urlPtr := flag.String("url", "", "LDAP server URL with scheme")
 		basePtr := flag.String("basedn", "", "LDAP server base DN")
 		attrPtr := flag.String("userattr", "", "LDAP user attribute")
+		adminPtr := flag.String("admin", "", "LDAP admin group")
+		userPtr := flag.String("user", "", "LDAP user group")
 		flag.Parse()
-		if urlPtr == nil || basePtr == nil || attrPtr == nil {
+		if urlPtr == nil || basePtr == nil || attrPtr == nil ||
+			adminPtr == nil || userPtr == nil {
 			logger.Fatal("all config options failed")
 		}
 		c.URL = *urlPtr
 		c.BaseDN = *basePtr
 		c.UserAttr = *attrPtr
+		c.AdminGroup = *adminPtr
+		c.UserGroup = *userPtr
+
 	}
 	uname, ok := os.LookupEnv("username")
 	if !ok {
@@ -92,9 +100,9 @@ func main() {
 	re := regexp.MustCompile(`cn=([0-9-a-zA-Z]+),`)
 	for _, group := range groups {
 		g := re.FindStringSubmatch(group)[1]
-		if g == "hausers" {
+		if g == c.UserGroup {
 			u.Group = "system-users"
-		} else if g == "haadmins" {
+		} else if g == c.AdminGroup {
 			u.Group = "system-admin"
 		}
 	}
