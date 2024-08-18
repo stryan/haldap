@@ -1,0 +1,20 @@
+steps:
+  - name: submodules
+    image: alpine/git
+    commands:
+      - git submodule update --init --recursive
+  - name: build-container
+    image: plugins/docker
+    settings:
+      repo: git.saintnet.tech/stryan/haldap
+      registry: git.saintnet.tech
+      password:
+        from_secret: build_pass
+      username:
+        from_secret: build_username
+      dockerfile: Containerfile
+      tags: latest
+      layers: true
+when:
+  - branch: master
+    event: push
