@@ -6,4 +6,3 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a
 
 FROM homeassistant/home-assistant:stable
 COPY --from=builder /go/src/app/haldap /root/
-
