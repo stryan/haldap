@@ -17,4 +17,4 @@ steps:
       layers: true
 when:
   - branch: master
-    event: push
+    event: [push, manual, cron]
