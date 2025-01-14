@@ -1,0 +1,20 @@
+name: weekly-rebuild
+on:
+  push:
+    branches: ["master"]
+  schedule:
+    - cron: '0 0 * * 0'
+jobs:
+  # Build job
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Buildah Action
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: git.saintnet.tech/stryan/haldap
+          tags: latest
+          containerfiles: "Containerfile"
+          platforms: "linux/amd64"
