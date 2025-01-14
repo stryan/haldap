@@ -11,10 +11,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Buildah Action
-        uses: redhat-actions/buildah-build@v2
+      - name: Login to registry
+        uses: docker/login-action@v3
         with:
-          image: git.saintnet.tech/stryan/haldap
-          tags: latest
-          containerfiles: "Containerfile"
-          platforms: "linux/amd64"
+          registry: git.saintnet.tech
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+      - name: Build and push
+        run: "TODAY=$(date +'%Y-%m-%d')\ndocker build -t ${REGISTRY}/${REPO_OWNER}/${IMAGE_NAME}:latest -f Containerfile\ndocker push ${REGISTRY}/${REPO_OWNER}/${IMAGE_NAME}:latest          \n"
