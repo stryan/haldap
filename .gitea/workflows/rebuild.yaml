@@ -22,4 +22,4 @@ jobs:
           IMAGE_NAME: haldap
           REGISTRY: git.saintnet.tech
           REPO_OWNER: stryan
-        run: "TODAY=$(date +'%Y-%m-%d')\ndocker build -t ${REGISTRY}/${REPO_OWNER}/${IMAGE_NAME}:latest -f Containerfile .\ndocker push ${REGISTRY}/${REPO_OWNER}/${IMAGE_NAME}:latest          \n"
+        run: "TODAY=$(date +'%Y-%m-%d')\ndocker build -t ${REGISTRY}/${REPO_OWNER}/${IMAGE_NAME}:latest -o type=docker -f Containerfile .\ndocker push ${REGISTRY}/${REPO_OWNER}/${IMAGE_NAME}:latest          \n"
